@@ -1,0 +1,39 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+artifacts/
+
+# IDEs
+.vs/
+.idea/
+*.user
+*.suo
+*.userprefs
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Test results & coverage
+TestResults/
+*.trx
+coverage*.json
+coverage*.xml
+
+# NuGet
+*.nupkg
+packages/
+
+# Local data & secrets (never commit API keys or mail passwords!)
+*.db
+*.db-shm
+*.db-wal
+appsettings.Development.json
+appsettings.Local.json
+.env
+
+# OS
+.DS_Store
+Thumbs.db
