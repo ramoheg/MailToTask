@@ -1,32 +1,36 @@
 using MailToTask.Core;
 using MailToTask.Infrastructure;
 
-const string exampleEmail = """
-    Betreff: Wasser tropft unter dem Lavabo
-
-    Grüezi
-
-    Seit gestern Abend tropft bei uns im Badezimmer Wasser unter dem Lavabo hervor.
-    Wir haben einen Kübel darunter gestellt, aber es wird immer mehr.
-    Könnte jemand morgen oder übermorgen vorbeikommen?
-
-    Freundliche Grüsse
-    Sandra Keller
-    Seestrasse 12, 8820 Wädenswil
-    079 123 45 67
-    """;
-
 try
 {
     Console.WriteLine("Analyzing email...");
 
-    var emailAnalyzer = new EmailAnalyzer();
-    EmailAnalysis result = await emailAnalyzer.AnalyzeAsync(exampleEmail);
+    var analyzer = new EmailAnalyzer();
 
-    Console.WriteLine($"Customer: {result.Customer}");
-    Console.WriteLine($"Type:     {result.Type}");
-    Console.WriteLine($"Urgency:  {result.Urgency}");
-    Console.WriteLine($"Reply:{System.Environment.NewLine}{result.SuggestedReply}");
+    var expected = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "expected.csv"))
+        .Skip(1)
+        .Select(line => line.Split(';'))
+        .ToDictionary(c => c[0], c => (Type: Enum.Parse<RequestType>(c[2]),
+            Urgency: Enum.Parse<Urgency>(c[3])));
+
+    int passed = 0;
+    foreach ((string? file, (RequestType Type, Urgency Urgency) exp) in expected)
+    {
+        string text = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "emails", file));
+        var result = await analyzer.AnalyzeAsync(text);
+        bool ok = result.Type == exp.Type && result.Urgency == exp.Urgency;
+
+        if (ok)
+        {
+            passed++;
+        }
+
+        Console.WriteLine($"{(ok ? "OK" : "Fail")} {file}: got {result.Type}/{result.Urgency}, " +
+            $"expected {exp.Type}/{exp.Urgency}, customer '{result.Customer}'");
+    }
+
+    Console.WriteLine();
+    Console.WriteLine($"{passed}/{expected.Count} passed");
 }
 catch (HttpRequestException ex)
 {

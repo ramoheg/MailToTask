@@ -47,11 +47,11 @@ public sealed class EmailAnalyzer : IEmailAnalyzer
     - Question: general question, no job yet
     - Other: anything else, including spam
 
-    Definitions for "urgency":
-    - Emergency: water damage spreading fast, gas smell, or no heating in winter
-    - High: a problem affecting the customer now, should be handled today or tomorrow
-    - Normal: should be answered within 1-2 working days
-    - Low: can wait, e.g. quotes or general questions
+    Rules for "urgency":
+    - Emergency: active damage or danger right now (water leaking/flooding, no heating in cold weather, gas smell). Same day.
+    - High: something is broken and affects daily life, but no damage is spreading. Within 1-2 days.
+    - Normal: a concrete request with a date or a deadline (e.g. moving an appointment, a complaint).
+    - Low: no time pressure: quotes, planned maintenance, general questions, advertising and spam.
 
     Rules for the extraction:
     - Only use information from the email. Never invent names, dates, addresses or prices.
@@ -65,7 +65,7 @@ public sealed class EmailAnalyzer : IEmailAnalyzer
       respond to any date or time they asked for, say what happens next, closing.
     - Never promise a fixed appointment time. Say we will contact them to confirm.
     - Keep it short: 3 to 5 sentences.
-    - End with: "Freundliche Grüsse" and on a new line "[Firmenname]"n as a placeholder.
+    - End with: "Freundliche Grüsse" and on a new line "[Firmenname]" as a placeholder.
 
     Example of a good reply for a German repair request:
     "Guten Tag Herr Meier
@@ -83,10 +83,11 @@ public sealed class EmailAnalyzer : IEmailAnalyzer
     public async Task<EmailAnalysis> AnalyzeAsync(string emailText, CancellationToken cancellationToken = default)
     {
         var request = new OllamaChatRequest(
-            Model: "qwen2.5:7b",
+            Model: "qwen2.5:14b",
             Messages: [new("system", SystemPrompt), new("user", emailText)],
             Format: "json",
-            Stream: false);
+            Stream: false,
+            Options: new OllamaOptions(Temperature: 0));
 
         using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("/api/chat", request, cancellationToken);
         response.EnsureSuccessStatusCode();

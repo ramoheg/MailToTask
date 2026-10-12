@@ -8,4 +8,4 @@ namespace MailToTask.Infrastructure;
 /// <param name="Format">Set to "json" to force the model to answer with valid JSON.</param>
 /// <param name="Stream">False to recive the complete answer in one response instead of word by word.</param>
 public record OllamaChatRequest(
-    string Model, List<ChatMessage> Messages, string Format, bool Stream);
+    string Model, List<ChatMessage> Messages, string Format, bool Stream, OllamaOptions Options);

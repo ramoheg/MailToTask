@@ -15,4 +15,9 @@
     <ProjectReference Include="..\MailToTask.Core\MailToTask.Core.csproj" />
     <ProjectReference Include="..\MailToTask.Infrastructure\MailToTask.Infrastructure.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\testdata\emails\*.txt" CopyToOutputDirectory="PreserveNewest" LinkBase="emails" />
+    <None Include="..\..\testdata\expected.csv" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>
