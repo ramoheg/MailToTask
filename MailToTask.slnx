@@ -1,2 +1,10 @@
 <Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MailToTask.Core/MailToTask.Core.csproj" />
+    <Project Path="src/MailToTask.Infrastructure/MailToTask.Infrastructure.csproj" />
+    <Project Path="src/MailToTask.Worker/MailToTask.Worker.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MailToTask.Core.Tests/MailToTask.Core.Tests.csproj" />
+  </Folder>
 </Solution>
