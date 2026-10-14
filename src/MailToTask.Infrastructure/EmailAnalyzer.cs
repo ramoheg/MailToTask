@@ -10,17 +10,15 @@ namespace MailToTask.Infrastructure;
 /// Analyzes customer emails with a local Ollama model and extracts
 /// structured information such as customer, request type and urgency.
 /// </summary>
+/// /// <param name="httpClient">
+/// HTTP client for the Ollama API. Its <see cref="HttpClient.BaseAddress"/> must point
+/// to the Ollama server, e.g. http://localhost:11434.
+/// </param>
 /// <remarks>
 /// Requires Ollama running on http://localhost:11434 with the configured model pulled.
 /// </remarks>
-public sealed class EmailAnalyzer : IEmailAnalyzer
+public sealed class EmailAnalyzer(HttpClient httpClient) : IEmailAnalyzer
 {
-    private static readonly HttpClient _httpClient = new()
-    {
-        BaseAddress = new Uri("http://localhost:11434"),
-        Timeout = TimeSpan.FromMinutes(3)
-    };
-
     private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web)
     {
         Converters = { new JsonStringEnumConverter() }
@@ -89,7 +87,7 @@ public sealed class EmailAnalyzer : IEmailAnalyzer
             Stream: false,
             Options: new OllamaOptions(Temperature: 0));
 
-        using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("/api/chat", request, cancellationToken);
+        using HttpResponseMessage response = await httpClient.PostAsJsonAsync("/api/chat", request, cancellationToken);
         response.EnsureSuccessStatusCode();
 
         OllamaChatResponse? chat = await response.Content.ReadFromJsonAsync<OllamaChatResponse>(cancellationToken);

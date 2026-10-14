@@ -5,7 +5,13 @@ try
 {
     Console.WriteLine("Analyzing email...");
 
-    var analyzer = new EmailAnalyzer();
+    var httpClient = new HttpClient()
+    {
+        BaseAddress = new Uri("http://localhost:11434"),
+        Timeout = TimeSpan.FromMinutes(3)
+    };
+
+    var analyzer = new EmailAnalyzer(httpClient);
 
     var expected = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "expected.csv"))
         .Skip(1)
