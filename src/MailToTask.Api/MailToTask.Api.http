@@ -1,0 +1,25 @@
+@host = http://localhost:5000
+
+### Normal repair request
+POST {{host}}/api/analyze
+Content-Type: application/json
+
+{
+  "emailText": "Guten Tag\nUnser Lavabo im Bad tropft seit gestern.\nKönnten Sie diese Woche vorbeikommen?\nGruss Sandra Keller"
+}
+
+### Emergency
+POST {{host}}/api/analyze
+Content-Type: application/json
+
+{
+  "emailText": "Hilfe! Bei uns ist ein Rohr geplatzt, das Wasser läuft in den Keller!\nMarco Rossi, 079 123 45 67"
+}
+
+### Empty text, should return 400 Bad Request
+POST {{host}}/api/analyze
+Content-Type: application/json
+
+{
+  "emailText": ""
+}

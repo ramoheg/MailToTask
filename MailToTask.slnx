@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/MailToTask.Api/MailToTask.Api.csproj" />
     <Project Path="src/MailToTask.Core/MailToTask.Core.csproj" />
     <Project Path="src/MailToTask.Infrastructure/MailToTask.Infrastructure.csproj" />
     <Project Path="src/MailToTask.Worker/MailToTask.Worker.csproj" />
